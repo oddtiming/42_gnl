@@ -1,0 +1,76 @@
+- EOF (End of File):
+	EOF is not a character (in most modern operating systems). 
+	It is simply a condition that applies to a file stream when the end of the stream is reached. 
+	The confusion arises because a user may signal EOF for console input by typing a special character (e.g Control-D in Unix, Linux, et al), 
+	but this character is not seen by the running program, it is caught by the operating system which in turn signals EOF to the process.
+
+- READ
+	ssize_t read(int fildes, void *buf, size_t nbyte);
+	where 	fildes is the fd of the corresponding stream from which we want to read;
+			buf is the output of the reading;
+			nbyte is the amount of bytes we want to read
+	return value:
+			Upon successful completion, read() [XSI] [Option Start]  and pread() [Option End] shall return a non-negative integer 
+			indicating the number of bytes actually read. 
+			Otherwise, the functions shall return -1 and set errno to indicate the error.
+			(zero indicates end of file)
+
+	//NOTE : should check for status = read() == -1 ==> ERROR has occurred. 
+	
+	https://linux.die.net/man/2/read
+	In other words, if return < nbyte, we have reached the EOF or an error has happened (if return == -1).
+	If read returns 0, it means that 0 bytes were read, which means EOF has been reached.
+
+- BUFFER_SIZE
+/*	Could I use read once to set the first character presented as the fd, then use its pointer to sequentially
+**	scan the addresses to find either \n or EOF? What if there is a NULL char in the text file ? How about ctrl-D on unix systems?
+*/	Therefore, could I modify the BUFFER_SIZE according to whichever is larger between it and line_len ? NONONO
+
+	BUFFER_SIZE may be longer than the actual line that needs to be read, but may also be shorter! That's the real trick of the problem.
+	
+	If BUFFER_SIZE > line_len, then we need to store whatever is "excess" from the current_line in a static variable.
+	That static variable (e.g. static char *remainder) will be searched for a newline, and if there is none
+	, we need to re-read another BUFF_SIZE from the file.
+
+	If BUFFER_SIZE < line_len, we need to continue reading, (while appending the content of read() to the end of the buffer_string)
+	until we reach EOF.
+	EOF is found when: (status = read() < BUFF_SIZE || status = read() == 0)
+	When EOF is reached, char *remainder is set to NULL, and will be returned on next iteration.
+		IMPORTANT: If this is the chosen technique, remainder should never be set to NULL in-between function calls.
+
+	9/26 NOTE: I should protect my fct from BUFFER_SIZE == 0;
+				Simply return NULL on such occasion.
+
+- STATIC variable
+	I first thought to keep a variable to know whether I've hit the end of the text file/input, but then it doesn't solve
+	my buffer > line_len problem.
+	On 9/26/21 at night I'd settled for a static char *remainder, but I'm not sure how to know whether or not it's been initialized yet.
+	I could always keep at least a character or the \n at the end of my string once it's been initialized. This said, there's no way
+	to check the string before it's been initialized, is there ?
+	//Q : Can I declare + initialize on same line for static variables in the norminette ?
+	Another idea would be to have a static char **remainder, a little bit like ft_split, to check if there's any other element than
+	the NULL terminator.
+	I could also declare a struct, as there's no instruction against it, in which I would store the amount of lines
+	, the number of iterations, and even whether I've hit the end of the stream. 
+
+	NOTE:
+	- A static char * is always initialized to NULL;
+
+- TESTS
+	- Consecutive new lines
+	- 0 < BUFFER_SIZE < LONG_MAX
+	- empty files
+	- stdin
+	- ctrl-D in Linux
+	- no nl at EOF
+	- short character lines
+
+Extra notes from WIP on GNL:
+/*	Could I use read once to set the first character presented as the fd
+**	, then use its pointer to sequentially scan the addresses to find 
+**	either \n or EOF? What if there is a NULL char in the text file ? 
+**	How about ctrl-D on unix systems?
+**	Therefore, could I modify the BUFFER_SIZE according to whichever 
+**	is larger between it and line_len ?
+*/
+//NOTE: I should protect my fct from BUFFER_SIZE == 0;
