@@ -28,6 +28,7 @@ int	main(void)
 	ptr1 = get_next_line(fd1);
 	ptr2 = get_next_line(fd2);
 	ptr3 = get_next_line(fd3);
+	int fd_error = -1;
 
 	while (ptr1 || ptr2 || ptr3)
 	{
@@ -58,7 +59,7 @@ int	main(void)
 		ptr1 = get_next_line(fd1);
 		ptr2 = get_next_line(fd2);
 		ptr3 = get_next_line(fd3);
-	
+		get_next_line(fd_error);
 
 	}
 

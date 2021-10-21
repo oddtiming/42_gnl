@@ -1,44 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_utils_bonus.c                        :+:      :+:    :+:   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: iyahoui- <iyahoui-@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/09/28 16:07:04 by iyahoui-          #+#    #+#             */
-/*   Updated: 2021/10/21 11:51:53 by iyahoui-         ###   ########.fr       */
+/*   Created: 2021/09/27 13:10:20 by iyahoui-          #+#    #+#             */
+/*   Updated: 2021/09/27 16:36:10 by iyahoui-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line_bonus.h"
-
-//Returns the number of chars until the char c is hit. Works with c == 0
-size_t	strlen_c(char *s, char c)
-{
-	size_t	i;
-
-	i = 0;
-	if (!s)
-		return (0);
-	while (s[i] != c && s[i])
-		i++;
-	if (!c)
-		return (i);
-	if (s[i] != c)
-		return (0);
-	else
-		return (i + 1);
-}
+#include "get_next_line.h"
 
 //Slightly modified version from the libft where the dest is freed
-char	*ft_strjoin_free(char *s1, char const *s2)
+char	*ft_strjoin(char *s1, char const *s2)
 {
 	size_t	tot_len;
 	char	*s_joined;
 	int		i;
 
 	i = 0;
-	tot_len = strlen_c(s1, 0) + strlen_c((char *)s2, 0) + 1;
+	tot_len = ft_strlen(s1) + ft_strlen(s2) + 1;
 	s_joined = malloc(tot_len);
 	if (!s_joined)
 		return (NULL);
@@ -49,36 +31,82 @@ char	*ft_strjoin_free(char *s1, char const *s2)
 		free (s1);
 	}
 	if (s2)
+	{
 		while (*s2)
 			*s_joined++ = *s2++;
+	}
 	*s_joined++ = 0;
 	return (s_joined - tot_len);
 }
+
+size_t	ft_strlen(const char *s)
+{
+	size_t	len;
+
+	len = 0;
+	if (!s)
+		return (0);
+	while (s[len])
+		len++;
+	return (len);
+}
+
+/*
+char	*ft_strcpy(char *dest, char *src)
+{
+	size_t	i;
+
+	i = 0;
+	if (src)
+	{
+		while (src[i] != 0)
+		{
+			dest[i] = src[i];
+			i++;
+		}
+	}
+	dest[i] = 0;
+	return (dest);
+}
+*/
 
 char	*ft_strncpy(char *dest, char *src, size_t n)
 {
 	size_t	i;
 
 	i = 0;
-	if (!src)
-		return (dest);
-	while (src[i] != 0 && i < n)
+	if (src)
 	{
-		dest[i] = src[i];
-		i++;
+		while (src[i] != 0 && i < n)
+		{
+			dest[i] = src[i];
+			i++;
+		}
 	}
 	dest[i] = 0;
 	return (dest);
 }
 
-//That's some of the dumbest shit y'all ever witness. 
-//Just to save a couple lines of code.
-char	*ft_free(void *ptr)
+void	*ft_memmove(void *dest, const void *src, size_t len)
 {
-	if (ptr)
+	unsigned char	*src_ptr;
+	unsigned char	*dest_ptr;
+
+	src_ptr = (unsigned char *)src;
+	dest_ptr = (unsigned char *)dest;
+	if (src == dest)
+		return (NULL);
+	if (dest > src)
 	{
-		free (ptr);
-		ptr = NULL;
+		while (len--)
+			*(dest_ptr + len) = *(src_ptr + len);
 	}
-	return (NULL);
+	else
+	{	
+		while (len--)
+		{
+			*dest_ptr++ = *src_ptr++;
+		}
+	}
+	return (dest);
 }

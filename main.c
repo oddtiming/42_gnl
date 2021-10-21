@@ -12,11 +12,12 @@ int	main(void)
 	int		status;
 	char	*ptr;
 	char	*file1 = "./test_files/test_nl.txt";
-	char	*file2 = "./test_files/test_short_nonl.txt";
-	char	*file3 = "./test_files/test_long_nonl.txt";
+//	char	*file2 = "./test_files/test_short_nonl.txt";
+//	char	*file3 = "./test_files/test_long_nonl.txt";
 
 
-	fd = open(file1, O_RDONLY);
+//	fd = open(file1, O_RDONLY);
+	fd = -1;
 	puts("---------STARTING TESTS NL---------\n\n");
 	printf("File 1 = %s\n", file1);
 	printf("Fd = %d\nbuff_size = %d\n", fd, BUFFER_SIZE);
@@ -26,7 +27,7 @@ int	main(void)
 		free (ptr);
 	}
 	status = close(fd);
-
+/*
 
 	fd = open(file2, O_RDONLY);
 	puts("---------STARTING TESTS SHORT NO NL---------\n\n");
@@ -50,5 +51,5 @@ int	main(void)
 		free (ptr);
 	}
 	status = close(fd);
-
+*/
 }

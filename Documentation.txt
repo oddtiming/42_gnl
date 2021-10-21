@@ -74,3 +74,20 @@ Extra notes from WIP on GNL:
 **	is larger between it and line_len ?
 */
 //NOTE: I should protect my fct from BUFFER_SIZE == 0;
+
+- IDEAS :
+	- Could maybe remove ft_strjoin_free and only use strncpy by adding a 
+	malloc to strncpy :
+		*remain = ft_strncpy_hybrid(*remain + read_status, *read_buf, \
+			strlen_c(*remain, 0), strlen_c(read_buf, 0))
+		- would need to add a conditional free to ft_strncpy_hybrid
+		- would need to triple check that I have no pesky interaction with downstream calls
+	- Could try the bonus by using a linked list
+		typedef struct	s_file
+		{
+			char	*remainder;
+			int		fd;
+			t_file	*next;
+		}	t_file;
+		//in GNL
+		static t_file	first_fd;
